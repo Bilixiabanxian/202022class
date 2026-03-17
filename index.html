@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2020级22班 向阳乐知班同学录</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/fontsource-inter@4.0.0/index.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #F9F8F4;
+            color: #2D2D2D;
+        }
+        
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        .glass-header {
+            background: rgba(249, 248, 244, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F9F8F4; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D1C7B7; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #B0A695; 
+        }
+
+        .tag {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            background-color: #F3F4F6;
+            color: #4B5563;
+            border: 1px solid #E5E7EB;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #D4A017;
+            box-shadow: 0 0 0 3px rgba(212, 160, 23, 0.1);
+        }
+
+        /* 模态框动画 */
+        .modal-overlay {
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            transform: scale(0.95) translateY(20px);
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1) translateY(0);
+        }
+
+        .info-label {
+            font-size: 0.75rem;
+            color: #9CA3AF;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.25rem;
+        }
+
+        .info-value {
+            font-size: 0.95rem;
+            color: #1F2937;
+            font-weight: 500;
+        }
+
+        .social-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .social-icon:hover {
+            transform: translateY(-2px);
+        }
+
+        .social-icon img {
+            width: 20px;
+            height: 20px;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <header class="glass-header sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full overflow-hidden border border-gray-200 shadow-sm bg-white flex items-center justify-center text-yellow-600 font-bold text-xl">
+                        22
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold tracking-tight text-gray-900">2020级 22班</h1>
+                        <p class="text-xs text-gray-500 font-medium tracking-widest uppercase">向阳 · 乐知</p>
+                    </div>
+                </div>
+                <div class="hidden md:block text-sm text-gray-400">
+                    青春不散场 · 未来犹可期
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full">
+        
+        <div class="mb-10 flex flex-col md:flex-row gap-4 justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+            <div class="relative w-full md:w-96">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+                <input type="text" id="searchInput" placeholder="搜索同学姓名..." class="search-input block w-full pl-10 pr-3 py-2.5 border border-gray-200 rounded-lg leading-5 bg-gray-50 text-gray-900 placeholder-gray-400 focus:bg-white transition duration-150 ease-in-out sm:text-sm">
+            </div>
+            
+            <div class="flex gap-2 w-full md:w-auto overflow-x-auto pb-2 md:pb-0 no-scrollbar">
+                <button onclick="filterStudents('all')" class="filter-btn active px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-900 text-white whitespace-nowrap" data-filter="all">全部</button>
+                <button onclick="filterStudents('班委')" class="filter-btn px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors whitespace-nowrap" data-filter="班委">班委成员</button>
+                <button onclick="filterStudents('课代表')" class="filter-btn px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors whitespace-nowrap" data-filter="课代表">课代表</button>
+                <button onclick="filterStudents('普通同学')" class="filter-btn px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors whitespace-nowrap" data-filter="普通同学">普通同学</button>
+            </div>
+        </div>
+
+        <div class="mb-6 flex justify-between items-end">
+            <h2 class="text-lg font-semibold text-gray-800">班级成员 <span id="countDisplay" class="text-gray-400 font-normal text-sm ml-2">共 0 人</span></h2>
+        </div>
+
+        <div id="studentGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Cards injected via JS -->
+        </div>
+        
+        <div id="emptyState" class="hidden flex-col items-center justify-center py-20 text-center">
+            <div class="bg-gray-100 rounded-full p-4 mb-4">
+                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <h3 class="text-lg font-medium text-gray-900">未找到相关同学</h3>
+            <p class="text-gray-500 mt-1">尝试更换搜索关键词或筛选条件</p>
+        </div>
+
+    </main>
+
+    <!-- 详情模态框 -->
+    <div id="detailModal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+        <div class="modal-content bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <!-- 模态框头部 -->
+            <div class="sticky top-0 bg-white border-b border-gray-100 px-6 py-4 flex justify-between items-center rounded-t-2xl">
+                <h3 class="text-lg font-bold text-gray-900">同学详情</h3>
+                <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
+                    <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- 模态框内容 -->
+            <div class="p-6" id="modalContent">
+                <!-- 内容将通过 JS 动态填充 -->
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-white border-t border-gray-100 mt-auto">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-gray-400">© 2024 2020级22班 向阳乐知班。All rights reserved.</p>
+                <div class="flex space-x-6">
+                    <span class="text-sm text-gray-400 hover:text-gray-600 cursor-pointer">关于我们</span>
+                    <span class="text-sm text-gray-400 hover:text-gray-600 cursor-pointer">联系管理员</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 学生数据 - 包含详细信息
+        const studentsData = [
+            { 
+                id: 1, 
+                name: "张伟", 
+                gender: "男",
+                birthDate: "2002-03-15",
+                role: "班长", 
+                category: "班委", 
+                quote: "星光不问赶路人，时光不负有心人。",
+                personality: "开朗、责任心强、善于沟通",
+                hobbies: "篮球、阅读、摄影",
+                wechat: "zhangwei2020",
+                qq: "123456789",
+                email: "zhangwei@example.com",
+                social: "微博：@张伟2020",
+                graduationThoughts: "四年时光匆匆而过，感谢老师的教导和同学们的陪伴。愿我们都能在各自的领域闪闪发光！",
+                otherWords: "保持联系，常聚常新！"
+            },
+            { 
+                id: 2, 
+                name: "李娜", 
+                gender: "女",
+                birthDate: "2002-07-22",
+                role: "学习委员", 
+                category: "班委", 
+                quote: "乐知笃行，向阳而生。",
+                personality: "认真、细致、乐于助人",
+                hobbies: "钢琴、绘画、旅行",
+                wechat: "lina_study",
+                qq: "234567890",
+                email: "lina@example.com",
+                social: "小红书：@李娜的日常",
+                graduationThoughts: "学习是一场马拉松，不是短跑。希望大家都能坚持自己的热爱，走得更远。",
+                otherWords: "有空一起约饭呀~"
+            },
+            { 
+                id: 3, 
+                name: "王强", 
+                gender: "男",
+                birthDate: "2001-11-08",
+                role: "体育委员", 
+                category: "班委", 
+                quote: "运动是生命的源泉。",
+                personality: "阳光、活力、团队精神",
+                hobbies: "足球、健身、跑步",
+                wechat: "wangqiang_sport",
+                qq: "345678901",
+                email: "wangqiang@example.com",
+                social: "抖音：@运动王强",
+                graduationThoughts: "身体是革命的本钱，希望大家毕业后也要坚持运动，保持健康！",
+                otherWords: "约球随时找我！"
+            },
+            { 
+                id: 4, 
+                name: "刘芳", 
+                gender: "女",
+                birthDate: "2002-05-30",
+                role: "语文课代表", 
+                category: "课代表", 
+                quote: "腹有诗书气自华。",
+                personality: "文静、感性、富有想象力",
+                hobbies: "写作、书法、品茶",
+                wechat: "liufang_poetry",
+                qq: "456789012",
+                email: "liufang@example.com",
+                social: "公众号：芳菲文字",
+                graduationThoughts: "文字是心灵的窗户，愿我们都能用文字记录美好，传递温暖。",
+                otherWords: "欢迎投稿我的公众号~"
+            },
+            { 
+                id: 5, 
+                name: "陈杰", 
+                gender: "男",
+                birthDate: "2002-01-18",
+                role: "数学课代表", 
+                category: "课代表", 
+                quote: "逻辑是思维的体操。",
+                personality: "理性、严谨、好奇心强",
+                hobbies: "编程、棋类、解谜",
+                wechat: "chenjie_math",
+                qq: "567890123",
+                email: "chenjie@example.com",
+                social: "GitHub: @chenjie",
+                graduationThoughts: "数学教会我思考，编程让我创造。愿我们都能用技术改变世界。",
+                otherWords: "有技术问题随时交流！"
+            },
+            { 
+                id: 6, 
+                name: "杨敏", 
+                gender: "女",
+                birthDate: "2002-09-12",
+                role: "英语课代表", 
+                category: "课代表", 
+                quote: "Language is the road map of a culture.",
+                personality: "活泼、外向、国际化",
+                hobbies: "英语角、美剧、出国旅行",
+                wechat: "yangmin_english",
+                qq: "678901234",
+                email: "yangmin@example.com",
+                social: "Instagram: @yangmin",
+                graduationThoughts: "世界很大，语言是钥匙。希望大家都能走出国门，看遍世界。",
+                otherWords: "Let's keep in touch!"
+            },
+            { 
+                id: 7, 
+                name: "赵雷", 
+                gender: "男",
+                birthDate: "2001-12-25",
+                role: "物理课代表", 
+                category: "课代表", 
+                quote: "给我一个支点，我可以撬动地球。",
+                personality: "沉稳、专注、探索精神",
+                hobbies: "实验、天文、科普",
+                wechat: "zhaolei_physics",
+                qq: "789012345",
+                email: "zhaolei@example.com",
+                social: "B站：@物理赵雷",
+                graduationThoughts: "物理学让我明白，世界充满未知。愿我们永远保持探索的热情。",
+                otherWords: "一起仰望星空吧！"
+            },
+            { 
+                id: 8, 
+                name: "孙丽", 
+                gender: "女",
+                birthDate: "2002-04-05",
+                role: "文艺委员", 
+                category: "班委", 
+                quote: "生活需要一点艺术感。",
+                personality: "创意、感性、表现力强",
+                hobbies: "舞蹈、唱歌、设计",
+                wechat: "sunli_art",
+                qq: "890123456",
+                email: "sunli@example.com",
+                social: "抖音：@孙丽的舞台",
+                graduationThoughts: "艺术让生活更美好，愿我们都能找到属于自己的舞台。",
+                otherWords: "有演出记得叫我！"
+            },
+            { 
+                id: 9, 
+                name: "周杰", 
+                gender: "男",
+                birthDate: "2002-08-20",
+                role: "同学", 
+                category: "普通同学", 
+                quote: "保持热爱，奔赴山海。",
+                personality: "随和、乐观、适应力强",
+                hobbies: "游戏、音乐、美食",
+                wechat: "zhoujie_life",
+                qq: "901234567",
+                email: "zhoujie@example.com",
+                social: "网易云：@周杰的歌单",
+                graduationThoughts: "大学四年是最美好的时光，感谢有你们相伴。未来继续加油！",
+                otherWords: "开黑随时叫我~"
+            },
+            { 
+                id: 10, 
+                name: "吴刚", 
+                gender: "男",
+                birthDate: "2001-10-10",
+                role: "同学", 
+                category: "普通同学", 
+                quote: "沉默是金，行动是银。",
+                personality: "内敛、踏实、执行力强",
+                hobbies: "钓鱼、徒步、手工",
+                wechat: "wugang_quiet",
+                qq: "012345678",
+                email: "wugang@example.com",
+                social: "知乎：@吴刚",
+                graduationThoughts: "少说多做，用行动证明自己。愿我们都能成为更好的自己。",
+                otherWords: "有需要帮忙的尽管说。"
+            },
+            { 
+                id: 11, 
+                name: "郑华", 
+                gender: "女",
+                birthDate: "2002-06-15",
+                role: "同学", 
+                category: "普通同学", 
+                quote: "每天进步一点点。",
+                personality: "勤奋、自律、目标明确",
+                hobbies: "学习、瑜伽、烘焙",
+                wechat: "zhenghua_daily",
+                qq: "112345678",
+                email: "zhenghua@example.com",
+                social: "朋友圈：郑华的日常",
+                graduationThoughts: "坚持是最好的天赋，希望大家都能持之以恒，实现梦想。",
+                otherWords: "一起进步呀！"
+            },
+            { 
+                id: 12, 
+                name: "冯雪", 
+                gender: "女",
+                birthDate: "2002-02-28",
+                role: "同学", 
+                category: "普通同学", 
+                quote: "温柔半两，从容一生。",
+                personality: "温柔、善良、同理心强",
+                hobbies: "养花、手工、追剧",
+                wechat: "fengxue_soft",
+                qq: "212345678",
+                email: "fengxue@example.com",
+                social: "微博：@冯雪",
+                graduationThoughts: "温柔不是软弱，而是一种力量。愿我们都能温柔以待这个世界。",
+                otherWords: "心情不好可以找我聊天~"
+            },
+            { 
+                id: 13, 
+                name: "陈晨", 
+                gender: "男",
+                birthDate: "2002-03-03",
+                role: "同学", 
+                category: "普通同学", 
+                quote: "晨曦微露，未来可期。",
+                personality: "积极、向上、充满希望",
+                hobbies: "晨跑、摄影、创业",
+                wechat: "chenchen_morning",
+                qq: "312345678",
+                email: "chenchen@example.com",
+                social: "公众号：晨间思考",
+                graduationThoughts: "每一天都是新的开始，愿我们都能迎接属于自己的晨曦。",
+                otherWords: "早起的人儿有虫吃！"
+            },
+            { 
+                id: 14, 
+                name: "褚卫", 
+                gender: "男",
+                birthDate: "2001-09-09",
+                role: "同学", 
+                category: "普通同学", 
+                quote: "守护心中的梦想。",
+                personality: "坚定、忠诚、有原则",
+                hobbies: "武术、历史、收藏",
+                wechat: "chuwei_guard",
+                qq: "412345678",
+                email: "chuwei@example.com",
+                social: "贴吧：@褚卫",
+                graduationThoughts: "梦想需要守护，更需要行动。愿我们都能坚守初心，不负韶华。",
+                otherWords: "有事尽管开口！"
+            },
+            { 
+                id: 15, 
+                name: "蒋欣", 
+                gender: "女",
+                birthDate: "2002-07-07",
+                role: "同学", 
+                category: "普通同学", 
+                quote: "欣欣向荣，快乐成长。",
+                personality: "开朗、热情、感染力强",
+                hobbies: "聚会、K歌、购物",
+                wechat: "jiangxin_happy",
+                qq: "512345678",
+                email: "jiangxin@example.com",
+                social: "小红书：@蒋欣",
+                graduationThoughts: "快乐是最好的状态，希望大家都能保持笑容，迎接每一天。",
+                otherWords: "聚会组织者就是我！"
+            },
+            { 
+                id: 16, 
+                name: "沈浪", 
+                gender: "男",
+                birthDate: "2001-08-16",
+                role: "同学", 
+                category: "普通同学", 
+                quote: "乘风破浪会有时。",
+                personality: "勇敢、冒险、不畏挑战",
+                hobbies: "冲浪、极限运动、旅行",
+                wechat: "shenlang_wave",
+                qq: "612345678",
+                email: "shenlang@example.com",
+                social: "Instagram: @shenlang",
+                graduationThoughts: "人生就像海浪，有起有落。愿我们都能乘风破浪，勇往直前。",
+                otherWords: "一起冒险去吧！"
+            }
+        ];
+
+        let currentFilter = 'all';
+        let searchQuery = '';
+        
+        const DEFAULT_AVATAR = "https://raw.bgithub.xyz/bilixiabanxian/202022class/main/%E6%97%A0.png";
+        const GITHUB_BASE_URL = "https://raw.githubusercontent.com/bilixiabanxian/202022class/main/";
+        
+        // 社交图标 URL
+        const WECHAT_ICON = "https://raw.bgithub.xyz/bilixiabanxian/202022class/main/wx.svg";
+        const QQ_ICON = "https://raw.bgithub.xyz/bilixiabanxian/202022class/main/qq.ico";
+        const EMAIL_ICON = "https://raw.bgithub.xyz/bilixiabanxian/202022class/main/email.svg";
+        const OTHER_ICON = "https://raw.bgithub.xyz/bilixiabanxian/202022class/main/other.svg";
+
+        const grid = document.getElementById('studentGrid');
+        const countDisplay = document.getElementById('countDisplay');
+        const emptyState = document.getElementById('emptyState');
+        const searchInput = document.getElementById('searchInput');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const detailModal = document.getElementById('detailModal');
+        const modalContent = document.getElementById('modalContent');
+
+        // 获取社交图标
+        function getSocialIcon(type) {
+            const icons = {
+                wechat: `<img src="${WECHAT_ICON}" alt="微信" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22%2307c160%22><path d=%22M8.5 13.5c0 .8-.7 1.5-1.5 1.5s-1.5-.7-1.5-1.5.7-1.5 1.5-1.5 1.5.7 1.5 1.5zm5 0c0 .8-.7 1.5-1.5 1.5s-1.5-.7-1.5-1.5.7-1.5 1.5-1.5 1.5.7 1.5 1.5z%22/></svg>'">`,
+                qq: `<img src="${QQ_ICON}" alt="QQ" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22%2312B7F5%22><path d=%22M12 2C6.5 2 2 6.5 2 12c0 4.4 2.9 8.1 6.9 9.5.5.1.7-.2.7-.5v-1.8c-2.8.6-3.4-1.2-3.4-1.2-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.6.3-1.1.6-1.3-2.2-.3-4.5-1.1-4.5-4.9 0-1.1.4-2.1 1-2.8-.3-.9-.9-2.8.2-2.8 0 0 .9-.3 2.9 1.1.8-.2 1.7-.3 2.6-.3s1.8.1 2.6.3c2-1.4 2.9-1.1 2.9-1.1 1.1 0 .5 1.9.2 2.8.6.7 1 1.7 1 2.8 0 3.8-2.3 4.6-4.5 4.9.3.3.6.8.6 1.6v2.4c0 .3.2.6.7.5 4-1.4 6.9-5.1 6.9-9.5C22 6.5 17.5 2 12 2z%22/></svg>'">`,
+                email: `<img src="${EMAIL_ICON}" alt="邮箱" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%236B7280%22 stroke-width=%222%22><path d=%22M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z%22/></svg>'">`,
+                other: `<img src="${OTHER_ICON}" alt="其他" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%236B7280%22 stroke-width=%222%22><path d=%22M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9%22/></svg>'">`
+            };
+            return icons[type] || icons.other;
+        }
+
+        function renderStudents() {
+            grid.innerHTML = '';
+            
+            const filteredData = studentsData.filter(student => {
+                const matchesCategory = currentFilter === 'all' || student.category === currentFilter;
+                const matchesSearch = student.name.includes(searchQuery) || student.role.includes(searchQuery);
+                return matchesCategory && matchesSearch;
+            });
+
+            countDisplay.textContent = `共 ${filteredData.length} 人`;
+
+            if (filteredData.length === 0) {
+                emptyState.classList.remove('hidden');
+                emptyState.classList.add('flex');
+            } else {
+                emptyState.classList.add('hidden');
+                emptyState.classList.remove('flex');
+                
+                filteredData.forEach(student => {
+                    const card = document.createElement('div');
+                    card.className = 'bg-white rounded-xl p-6 border border-gray-100 shadow-sm card-hover flex flex-col items-center text-center relative overflow-hidden group cursor-pointer';
+                    card.onclick = () => openModal(student);
+                    
+                    const avatarUrl = `${GITHUB_BASE_URL}${student.id}.png`;
+
+                    card.innerHTML = `
+                        <div class="absolute top-0 right-0 w-24 h-24 bg-yellow-50 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
+                        <div class="relative z-10 w-20 h-20 mb-4 rounded-full overflow-hidden border-2 border-white shadow-md bg-gray-100">
+                            <img 
+                                src="${avatarUrl}" 
+                                alt="${student.name}" 
+                                class="w-full h-full object-cover"
+                                onerror="this.onerror=null; this.src='${DEFAULT_AVATAR}';"
+                            >
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-900 mb-1">${student.name}</h3>
+                        <span class="tag mb-4 bg-yellow-50 text-yellow-700 border-yellow-100">${student.role}</span>
+                        <p class="text-gray-500 text-sm italic leading-relaxed mb-4">"${student.quote}"</p>
+                        <div class="mt-auto w-full pt-4 border-t border-gray-50 flex justify-between items-center text-xs text-gray-400">
+                            <span>ID: 202022${String(student.id).padStart(2, '0')}</span>
+                            <span class="group-hover:text-yellow-600 transition-colors">查看详情 &rarr;</span>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            }
+        }
+
+        function openModal(student) {
+            const avatarUrl = `${GITHUB_BASE_URL}${student.id}.png`;
+            
+            modalContent.innerHTML = `
+                <!-- 个人信息头部 -->
+                <div class="flex items-center gap-6 mb-8 pb-6 border-b border-gray-100">
+                    <div class="w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-100 flex-shrink-0">
+                        <img 
+                            src="${avatarUrl}" 
+                            alt="${student.name}" 
+                            class="w-full h-full object-cover"
+                            onerror="this.onerror=null; this.src='${DEFAULT_AVATAR}';"
+                        >
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900 mb-2">${student.name}</h2>
+                        <div class="flex items-center gap-3 text-sm text-gray-500">
+                            <span class="tag bg-yellow-50 text-yellow-700 border-yellow-100">${student.role}</span>
+                            <span>ID: 202022${String(student.id).padStart(2, '0')}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 基本信息网格 -->
+                <div class="grid grid-cols-2 gap-6 mb-8">
+                    <div>
+                        <p class="info-label">性别</p>
+                        <p class="info-value">${student.gender}</p>
+                    </div>
+                    <div>
+                        <p class="info-label">出生日期</p>
+                        <p class="info-value">${student.birthDate}</p>
+                    </div>
+                    <div class="col-span-2">
+                        <p class="info-label">性格特点</p>
+                        <p class="info-value">${student.personality}</p>
+                    </div>
+                    <div class="col-span-2">
+                        <p class="info-label">兴趣爱好</p>
+                        <p class="info-value">${student.hobbies}</p>
+                    </div>
+                </div>
+
+                <!-- 联系方式 -->
+                <div class="mb-8">
+                    <h4 class="text-sm font-semibold text-gray-700 mb-4 flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                        联系方式
+                    </h4>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        ${student.wechat ? `
+                        <a href="#" class="social-icon bg-green-50 hover:bg-green-100" title="微信：${student.wechat}">
+                            ${getSocialIcon('wechat')}
+                        </a>` : ''}
+                        ${student.qq ? `
+                        <a href="#" class="social-icon bg-blue-50 hover:bg-blue-100" title="QQ：${student.qq}">
+                            ${getSocialIcon('qq')}
+                        </a>` : ''}
+                        ${student.email ? `
+                        <a href="mailto:${student.email}" class="social-icon bg-gray-50 hover:bg-gray-100" title="邮箱：${student.email}">
+                            ${getSocialIcon('email')}
+                        </a>` : ''}
+                        ${student.social ? `
+                        <a href="#" class="social-icon bg-purple-50 hover:bg-purple-100" title="${student.social}">
+                            ${getSocialIcon('other')}
+                        </a>` : ''}
+                    </div>
+                    <div class="mt-3 text-xs text-gray-400 space-y-1">
+                        ${student.wechat ? `<p>微信：${student.wechat}</p>` : ''}
+                        ${student.qq ? `<p>QQ：${student.qq}</p>` : ''}
+                        ${student.email ? `<p>邮箱：${student.email}</p>` : ''}
+                        ${student.social ? `<p>${student.social}</p>` : ''}
+                    </div>
+                </div>
+
+                <!-- 毕业感想 -->
+                <div class="mb-6 p-4 bg-yellow-50 rounded-xl border border-yellow-100">
+                    <h4 class="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                        <svg class="w-4 h-4 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                        毕业感想
+                    </h4>
+                    <p class="text-gray-600 text-sm leading-relaxed italic">"${student.graduationThoughts}"</p>
+                </div>
+
+                <!-- 其他想说的话 -->
+                ${student.otherWords ? `
+                <div class="p-4 bg-gray-50 rounded-xl border border-gray-100">
+                    <h4 class="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                        <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                        其他想说的话
+                    </h4>
+                    <p class="text-gray-600 text-sm leading-relaxed">${student.otherWords}</p>
+                </div>
+                ` : ''}
+            `;
+
+            detailModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            detailModal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // 点击模态框外部关闭
+        detailModal.addEventListener('click', (e) => {
+            if (e.target === detailModal) {
+                closeModal();
+            }
+        });
+
+        // ESC 键关闭
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && detailModal.classList.contains('active')) {
+                closeModal();
+            }
+        });
+
+        function filterStudents(category) {
+            currentFilter = category;
+            
+            filterBtns.forEach(btn => {
+                if (btn.dataset.filter === category) {
+                    btn.classList.remove('text-gray-600', 'hover:bg-gray-100');
+                    btn.classList.add('bg-gray-900', 'text-white');
+                } else {
+                    btn.classList.add('text-gray-600', 'hover:bg-gray-100');
+                    btn.classList.remove('bg-gray-900', 'text-white');
+                }
+            });
+
+            renderStudents();
+        }
+
+        searchInput.addEventListener('input', (e) => {
+            searchQuery = e.target.value.trim();
+            renderStudents();
+        });
+
+        renderStudents();
+
+    </script>
+</body>
+</html>
+
